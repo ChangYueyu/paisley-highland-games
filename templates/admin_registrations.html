@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+  <section class="max-w-5xl mx-auto">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-semibold text-slate-900">
+          Registrations overview
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600">
+          View online entries submitted for the Paisley Highland Games. Use the filter to focus on
+          a single event.
+        </p>
+      </div>
+
+      <a href="{{ url_for('admin_logout') }}"
+         class="text-xs sm:text-sm text-slate-500 hover:text-emerald-700">
+        Log out
+      </a>
+    </div>
+
+    <form method="get"
+          class="mb-4 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+      <label for="event_id" class="text-slate-600">Filter by event:</label>
+      <select
+        id="event_id"
+        name="event_id"
+        class="rounded-full border border-slate-300 px-3 py-1 bg-white">
+        <option value="">All events</option>
+        {% for e in events %}
+          <option value="{{ e.id }}"
+                  {% if selected_event_id == e.id %}selected{% endif %}>
+            {{ e.name }}
+          </option>
+        {% endfor %}
+      </select>
+      <button
+        type="submit"
+        class="px-3 py-1 rounded-full border border-emerald-600 text-emerald-700 hover:bg-emerald-50">
+        Apply
+      </button>
+    </form>
+
+    <!-- 小统计：当前视图下的报名数量 -->
+    <div class="mb-3 text-xs sm:text-sm text-slate-600">
+      {% set total = regs | length %}
+      {% if selected_event_id %}
+        Showing {{ total }} registration{% if total != 1 %}s{% endif %} for the selected event.
+      {% else %}
+        Showing {{ total }} registration{% if total != 1 %}s{% endif %} across all events.
+      {% endif %}
+    </div>
+
+    {% if regs %}
+      <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+        <table class="min-w-full text-xs sm:text-sm text-slate-700">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-3 py-2 text-left font-semibold">Competitor</th>
+              <th class="px-3 py-2 text-left font-semibold">Team</th>
+              <th class="px-3 py-2 text-left font-semibold">Event</th>
+              <th class="px-3 py-2 text-left font-semibold">Email</th>
+              <th class="px-3 py-2 text-left font-semibold">Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in regs %}
+              <tr class="border-b border-slate-100">
+                <td class="px-3 py-2 align-top">
+                  {{ r.competitor_name }}
+                </td>
+                <td class="px-3 py-2 align-top">
+                  {{ r.team_name or "—" }}
+                </td>
+                <td class="px-3 py-2 align-top">
+                  {{ r.event.name }}
+                </td>
+                <td class="px-3 py-2 align-top">
+                  {{ r.email }}
+                </td>
+                <td class="px-3 py-2 align-top text-[11px] sm:text-xs text-slate-500">
+                  {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-600">
+        There are no registrations to display yet. Once competitors submit entries online, they will
+        appear here for organisers to review.
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

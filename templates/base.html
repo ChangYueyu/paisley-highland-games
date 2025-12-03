@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Paisley Highland Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+
+  <nav class="bg-emerald-700 text-white shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <a href="{{ url_for('home') }}" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-sm font-semibold">
+          PH
+        </div>
+        <div>
+  <div class="text-lg font-semibold tracking-wide">
+    Paisley Highland Games
+  </div>
+  <div class="text-xs text-emerald-100/80">
+    Highland games festival web app
+  </div>
+</div>
+      </a>
+
+      <div class="flex items-center gap-3 text-sm">
+        <a href="{{ url_for('home') }}" class="hover:text-emerald-100">
+          Home
+        </a>
+
+        {% if session.get('admin_logged_in') %}
+          <a href="{{ url_for('admin_registrations') }}" class="hover:text-emerald-100">
+            Admin
+          </a>
+          <a href="{{ url_for('admin_logout') }}"
+             class="px-3 py-1 rounded-full border border-emerald-200/70 text-emerald-50 hover:bg-emerald-600">
+            Logout
+          </a>
+        {% else %}
+          <a href="{{ url_for('admin_login') }}"
+             class="px-3 py-1 rounded-full border border-emerald-200/70 text-emerald-50 hover:bg-emerald-600">
+            Admin Login
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主体内容 -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="mb-4 space-y-2">
+          {% for msg in messages %}
+            <div class="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+
+  <footer class="border-t border-slate-200 bg-white mt-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3 text-xs sm:text-sm text-slate-500 flex flex-col sm:flex-row justify-between gap-1">
+      <span>&copy; 2025 Paisley Highland Games · Fictional coursework project.</span>
+      <span>Built with Flask · SQLite · Tailwind CSS</span>
+    </div>
+  </footer>
+</body>
+</html>

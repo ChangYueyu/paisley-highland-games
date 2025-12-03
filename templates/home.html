@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% block content %}
+
+  
+  <section class="mb-8 grid gap-6 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] items-start">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-semibold text-slate-900 mb-2">
+        Paisley Highland Games online entry
+      </h1>
+
+      <p class="text-sm sm:text-base text-slate-600 max-w-xl mb-3">
+        Welcome to the online entry site for the Paisley Highland Games. Here you can explore a
+        selection of events, see when and where they take place, and send a simple online entry
+        if you would like to take part as a competitor or with a team.
+      </p>
+
+      
+      <ul class="text-xs sm:text-sm text-slate-600 space-y-1.5 max-w-xl mb-3">
+        <li>• See upcoming events at a glance with dates, locations and short descriptions.</li>
+        <li>• Open an event page to check times, venues and what each activity involves.</li>
+        <li>• Fill in a short online entry form for the event you would like to join.</li>
+        <li>• Let organisers view and manage all registrations together in a clear list.</li>
+      </ul>
+
+      
+      <div
+        class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+               bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs sm:text-sm font-medium">
+        <span class="text-emerald-700">Group members:</span>
+        <span>Yuyu Chang</span>
+        <span>·</span>
+        <span>Yuyu Qi</span>
+      </div>
+    </div>
+
+    
+    <div class="hidden md:block">
+      <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <img
+          src="{{ url_for('static', filename='images/highland-banner.jpg') }}"
+          alt="Highland games landscape"
+          class="w-full h-40 object-cover">
+        <div class="px-4 py-3 text-xs text-slate-600">
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-semibold text-slate-900">Paisley Highland Games</span>
+            <span class="text-emerald-700 text-[11px]">Online entry</span>
+          </div>
+          <p>
+            A local-style Highland games festival combining sports, music and community activities
+            in and around Paisley.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="mb-8">
+    <h2 class="text-lg sm:text-xl font-semibold text-slate-900 mb-2">
+      About Paisley Highland Games
+    </h2>
+    <p class="text-sm sm:text-base text-slate-600 max-w-3xl mb-2">
+      The Paisley Highland Games are imagined as an annual local festival that brings together
+      traditional Scottish sports, outdoor activities and family-friendly events in and around the
+      town of Paisley. The fictional organising committee includes representatives from the local
+      council, sports clubs and community groups.
+    </p>
+    <p class="text-sm sm:text-base text-slate-600 max-w-3xl">
+      The games are designed to run over a long weekend, with different activities taking place at
+      parks, sports grounds and public spaces. This website focuses on providing clear information
+      for competitors and visitors, and on making it easier to manage entries in advance of the
+      event.
+    </p>
+  </section>
+
+  
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+      <div>
+        <h2 class="text-lg sm:text-xl font-semibold text-slate-900">
+          Upcoming events
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Choose an event to see more details or register as a competitor.
+        </p>
+      </div>
+
+      {% if categories %}
+        <form method="get" class="flex items-center gap-2 text-xs sm:text-sm">
+          <label for="category" class="text-slate-600">Filter by type:</label>
+          <select
+            id="category"
+            name="category"
+            class="rounded-full border border-slate-300 px-3 py-1 text-xs sm:text-sm bg-white">
+            <option value="">All</option>
+            {% for c in categories %}
+              <option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>
+                {{ c }}
+              </option>
+            {% endfor %}
+          </select>
+          <button
+            type="submit"
+            class="px-3 py-1 rounded-full border border-emerald-600 text-emerald-700 text-xs hover:bg-emerald-50">
+            Apply
+          </button>
+        </form>
+      {% endif %}
+    </div>
+
+    {% if events %}
+      <div class="grid gap-5 md:grid-cols-2">
+        {% for e in events %}
+          {% set reg_count = e.registrations | length %}
+          <article class="rounded-xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition">
+            <div class="p-4 sm:p-5 flex flex-col h-full">
+              <header class="mb-3">
+                <div class="flex items-center justify-between gap-2 mb-1.5">
+                  <h3 class="text-base sm:text-lg font-semibold text-slate-900">
+                    {{ e.name }}
+                  </h3>
+                  {% if e.category %}
+                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      {{ e.category }}
+                    </span>
+                  {% endif %}
+                </div>
+                <div class="flex flex-wrap gap-2 items-center text-[11px] text-slate-500">
+                  {% if e.date %}
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200">
+                      <span>📅</span>
+                      <span>{{ e.date }}</span>
+                    </span>
+                  {% endif %}
+                  {% if e.location %}
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200">
+                      <span>📍</span>
+                      <span>{{ e.location }}</span>
+                    </span>
+                  {% endif %}
+
+                 
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-50 border border-slate-200 ml-auto">
+                    <span>👥</span>
+                    <span>
+                      {% if reg_count == 0 %}
+                        No entries yet
+                      {% elif reg_count == 1 %}
+                        1 entry
+                      {% else %}
+                        {{ reg_count }} entries
+                      {% endif %}
+                    </span>
+                  </span>
+                </div>
+              </header>
+
+              <p class="text-xs sm:text-sm text-slate-600 mb-4 line-clamp-3">
+                {{ e.description }}
+              </p>
+
+              <div class="mt-auto flex flex-wrap gap-3">
+                <a href="{{ url_for('event_detail', event_id=e.id) }}"
+                   class="text-xs sm:text-sm text-emerald-700 hover:text-emerald-800">
+                  View full event details →
+                </a>
+                <a href="{{ url_for('register', event_id=e.id) }}"
+                   class="text-xs sm:text-sm inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                  Register
+                </a>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-600">
+        No events are loaded in the system yet. In a full admin interface, organisers would be able to create and manage events here.
+      </div>
+    {% endif %}
+  </section>
+
+ 
+  <section class="mb-4">
+    <div class="flex items-baseline justify-between gap-3 mb-3">
+      <h2 class="text-lg font-semibold text-slate-900">
+        Atmosphere &amp; setting
+      </h2>
+    </div>
+
+    <div class="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3">
+      <div class="rounded-lg overflow-hidden border border-slate-200 bg-white">
+        <img
+          src="{{ url_for('static', filename='images/highland-1.jpg') }}"
+          alt="Highland games sample 1"
+          class="w-full h-24 sm:h-28 object-cover">
+      </div>
+      <div class="rounded-lg overflow-hidden border border-slate-200 bg-white">
+        <img
+          src="{{ url_for('static', filename='images/highland-2.jpg') }}"
+          alt="Highland games sample 2"
+          class="w-full h-24 sm:h-28 object-cover">
+      </div>
+      <div class="rounded-lg overflow-hidden border border-slate-200 bg-white hidden sm:block">
+        <img
+          src="{{ url_for('static', filename='images/highland-3.jpg') }}"
+          alt="Highland games sample 3"
+          class="w-full h-24 sm:h-28 object-cover">
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
